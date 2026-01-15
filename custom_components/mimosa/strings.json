@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Mimosa",
+        "description": "Enter the base URL and API token for your Mimosa server.",
+        "data": {
+          "name": "Name",
+          "base_url": "Base URL",
+          "api_token": "API token",
+          "client_id": "Signal client id"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect",
+      "invalid_auth": "Invalid authentication"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Mimosa options",
+        "description": "Tune polling and feature toggles.",
+        "data": {
+          "client_id": "Signal client id",
+          "stats_interval": "Stats interval (seconds)",
+          "signals_interval": "Signals interval (seconds)",
+          "heatmap_interval": "Heatmap interval (seconds)",
+          "rules_interval": "Rules interval (seconds)",
+          "enable_signals": "Enable signals",
+          "enable_heatmap": "Enable heatmap",
+          "enable_rules": "Enable Mimosa rules",
+          "enable_firewall_rules": "Enable firewall rules",
+          "heatmap_source": "Heatmap source",
+          "heatmap_window": "Heatmap window",
+          "heatmap_limit": "Heatmap limit"
+        }
+      }
+    }
+  }
+}

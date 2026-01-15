@@ -1,0 +1,11 @@
+{
+  "domain": "mimosa",
+  "name": "Mimosa",
+  "version": "0.1.0",
+  "config_flow": true,
+  "documentation": "https://github.com/sauron/Mimosa-homeassistant",
+  "issue_tracker": "https://github.com/sauron/Mimosa-homeassistant/issues",
+  "codeowners": [],
+  "iot_class": "local_polling",
+  "requirements": []
+}
