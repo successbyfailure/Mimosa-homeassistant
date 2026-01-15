@@ -13,6 +13,14 @@ Custom component for Home Assistant that connects to Mimosa and exposes:
 2. Restart Home Assistant.
 3. Go to Settings -> Devices & Services -> Add Integration -> Mimosa.
 
+## Installation (HACS)
+
+1. Open HACS -> Integrations -> menu -> Custom repositories.
+2. Add the repo URL and select category "Integration".
+3. Install "Mimosa" from HACS.
+4. Restart Home Assistant.
+5. Add the integration in Settings -> Devices & Services.
+
 ## Configuration
 
 You need a Mimosa base URL and API token (from Mimosa Settings -> Home Assistant).
