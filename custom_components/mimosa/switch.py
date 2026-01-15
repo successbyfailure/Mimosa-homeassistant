@@ -49,6 +49,9 @@ def _setup_dynamic_rules(
     coordinator.async_add_listener(_refresh)
 
 
+FIREWALL_RULE_TYPES = {"whitelist", "blacklist", "temporal"}
+
+
 def _setup_dynamic_firewall(
     coordinator: MimosaFirewallRulesCoordinator, entry: ConfigEntry, async_add_entities
 ) -> None:
@@ -60,6 +63,9 @@ def _setup_dynamic_firewall(
         new_entities: list[SwitchEntity] = []
         for rule in rules:
             rule_uuid = _resolve_firewall_rule_uuid(rule)
+            rule_type = rule.get("type")
+            if rule_type and rule_type not in FIREWALL_RULE_TYPES:
+                continue
             if not rule_uuid or rule_uuid in known:
                 continue
             known.add(rule_uuid)
@@ -169,8 +175,16 @@ class MimosaFirewallRuleSwitch(
     @property
     def name(self) -> str | None:
         rule = self._rule
-        label = rule.get("name") or rule.get("description") or self.rule_uuid
-        return f"Firewall Rule {label}"
+        rule_type = rule.get("type")
+        if rule_type == "whitelist":
+            label = "Whitelist"
+        elif rule_type == "blacklist":
+            label = "Blacklist"
+        elif rule_type == "temporal":
+            label = "Temporal Blocklist"
+        else:
+            label = rule.get("name") or rule.get("description") or self.rule_uuid
+        return f"Firewall {label}"
 
     @property
     def is_on(self) -> bool | None:

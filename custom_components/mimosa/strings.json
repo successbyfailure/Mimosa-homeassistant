@@ -30,8 +30,8 @@
           "rules_interval": "Rules interval (seconds)",
           "enable_signals": "Enable signals",
           "enable_heatmap": "Enable heatmap",
-          "enable_rules": "Enable Mimosa rules",
-          "enable_firewall_rules": "Enable firewall rules",
+          "enable_rules": "Enable Mimosa offense rules",
+          "enable_firewall_rules": "Enable firewall block/allow rules",
           "heatmap_source": "Heatmap source",
           "heatmap_window": "Heatmap window",
           "heatmap_limit": "Heatmap limit"

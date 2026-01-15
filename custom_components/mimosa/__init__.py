@@ -28,6 +28,10 @@ from .const import (
     DEFAULT_HEATMAP_LIMIT,
     DEFAULT_HEATMAP_SOURCE,
     DEFAULT_HEATMAP_WINDOW,
+    DEFAULT_ENABLE_FIREWALL_RULES,
+    DEFAULT_ENABLE_HEATMAP,
+    DEFAULT_ENABLE_RULES,
+    DEFAULT_ENABLE_SIGNALS,
     DEFAULT_RULES_INTERVAL,
     DEFAULT_SIGNALS_INTERVAL,
     DEFAULT_STATS_INTERVAL,
@@ -68,10 +72,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     heatmap_source = options.get(CONF_HEATMAP_SOURCE, DEFAULT_HEATMAP_SOURCE)
     heatmap_limit = options.get(CONF_HEATMAP_LIMIT, DEFAULT_HEATMAP_LIMIT)
 
-    enable_signals = options.get(CONF_ENABLE_SIGNALS, True)
-    enable_heatmap = options.get(CONF_ENABLE_HEATMAP, False)
-    enable_rules = options.get(CONF_ENABLE_RULES, True)
-    enable_firewall_rules = options.get(CONF_ENABLE_FIREWALL_RULES, False)
+    enable_signals = options.get(CONF_ENABLE_SIGNALS, DEFAULT_ENABLE_SIGNALS)
+    enable_heatmap = options.get(CONF_ENABLE_HEATMAP, DEFAULT_ENABLE_HEATMAP)
+    enable_rules = options.get(CONF_ENABLE_RULES, DEFAULT_ENABLE_RULES)
+    enable_firewall_rules = options.get(
+        CONF_ENABLE_FIREWALL_RULES, DEFAULT_ENABLE_FIREWALL_RULES
+    )
 
     stats_coordinator = MimosaStatsCoordinator(hass, api, stats_interval)
     await stats_coordinator.async_config_entry_first_refresh()

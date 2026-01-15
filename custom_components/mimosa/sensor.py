@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorEntity, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -58,6 +58,7 @@ class MimosaStatsSensor(CoordinatorEntity[MimosaStatsCoordinator], SensorEntity)
         self._attr_name = name
         self._attr_unique_id = f"{entry.entry_id}_{key}"
         self._attr_icon = icon
+        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=entry.data.get(CONF_NAME, DEFAULT_NAME),
