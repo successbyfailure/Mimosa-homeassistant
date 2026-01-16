@@ -10,7 +10,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import CONF_NAME, DEFAULT_NAME, DOMAIN
-from .coordinator import MimosaFirewallRulesCoordinator, MimosaRulesCoordinator
+from .coordinator import MimosaFirewallRulesCoordinator
 
 
 async def async_setup_entry(
@@ -18,35 +18,10 @@ async def async_setup_entry(
 ) -> None:
     runtime = hass.data[DOMAIN][entry.entry_id]
 
-    if runtime.rules_coordinator:
-        _setup_dynamic_rules(runtime.rules_coordinator, entry, async_add_entities)
-
     if runtime.firewall_rules_coordinator:
         _setup_dynamic_firewall(
             runtime.firewall_rules_coordinator, entry, async_add_entities
         )
-
-
-def _setup_dynamic_rules(
-    coordinator: MimosaRulesCoordinator, entry: ConfigEntry, async_add_entities
-) -> None:
-    known: set[int] = set()
-
-    def _refresh() -> None:
-        data = coordinator.data or {}
-        rules = data.get("rules", [])
-        new_entities: list[SwitchEntity] = []
-        for rule in rules:
-            rule_id = rule.get("id")
-            if rule_id is None or rule_id in known:
-                continue
-            known.add(rule_id)
-            new_entities.append(MimosaRuleSwitch(coordinator, entry, rule_id))
-        if new_entities:
-            async_add_entities(new_entities)
-
-    _refresh()
-    coordinator.async_add_listener(_refresh)
 
 
 FIREWALL_RULE_TYPES = {"whitelist", "blacklist", "temporal"}
@@ -84,63 +59,6 @@ def _resolve_firewall_rule_uuid(rule: Dict[str, Any]) -> Optional[str]:
         or rule.get("id")
         or rule.get("rule_id")
     )
-
-
-class MimosaRuleSwitch(CoordinatorEntity[MimosaRulesCoordinator], SwitchEntity):
-    """Switch for Mimosa offense rules."""
-
-    def __init__(
-        self, coordinator: MimosaRulesCoordinator, entry: ConfigEntry, rule_id: int
-    ) -> None:
-        super().__init__(coordinator)
-        self.rule_id = rule_id
-        self._attr_unique_id = f"{entry.entry_id}_rule_{rule_id}"
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, entry.entry_id)},
-            name=entry.data.get(CONF_NAME, DEFAULT_NAME),
-            manufacturer="Mimosa",
-        )
-
-    @property
-    def _rule(self) -> Dict[str, Any]:
-        data = self.coordinator.data or {}
-        rules = data.get("rules", [])
-        for rule in rules:
-            if rule.get("id") == self.rule_id:
-                return rule
-        return {}
-
-    @property
-    def name(self) -> str | None:
-        rule = self._rule
-        description = rule.get("description") or "Rule"
-        return f"Mimosa Rule {self.rule_id} - {description}"
-
-    @property
-    def is_on(self) -> bool | None:
-        return bool(self._rule.get("enabled", False))
-
-    @property
-    def extra_state_attributes(self) -> Dict[str, Any]:
-        rule = self._rule
-        return {
-            "plugin": rule.get("plugin"),
-            "event_id": rule.get("event_id"),
-            "severity": rule.get("severity"),
-            "description": rule.get("description"),
-            "min_last_hour": rule.get("min_last_hour"),
-            "min_total": rule.get("min_total"),
-            "min_blocks_total": rule.get("min_blocks_total"),
-            "block_minutes": rule.get("block_minutes"),
-        }
-
-    async def async_turn_on(self, **kwargs: Any) -> None:
-        await self.coordinator.api.toggle_rule(self.rule_id, True)
-        await self.coordinator.async_request_refresh()
-
-    async def async_turn_off(self, **kwargs: Any) -> None:
-        await self.coordinator.api.toggle_rule(self.rule_id, False)
-        await self.coordinator.async_request_refresh()
 
 
 class MimosaFirewallRuleSwitch(

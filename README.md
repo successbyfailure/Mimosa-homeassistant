@@ -5,7 +5,7 @@ Custom component for Home Assistant that connects to Mimosa and exposes:
 - Stats sensors (offenses/blocks).
 - Signals as binary sensors (offense/block).
 - Heatmap metadata sensor.
-- Rule switches (Mimosa and firewall rules).
+- Rule switches (firewall block/allow rules).
 
 ## Installation (manual)
 

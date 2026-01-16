@@ -22,7 +22,6 @@ from .const import (
     CONF_STATS_INTERVAL,
     CONF_ENABLE_HEATMAP,
     CONF_ENABLE_SIGNALS,
-    CONF_ENABLE_RULES,
     CONF_ENABLE_FIREWALL_RULES,
     DEFAULT_HEATMAP_INTERVAL,
     DEFAULT_HEATMAP_LIMIT,
@@ -30,7 +29,6 @@ from .const import (
     DEFAULT_HEATMAP_WINDOW,
     DEFAULT_ENABLE_FIREWALL_RULES,
     DEFAULT_ENABLE_HEATMAP,
-    DEFAULT_ENABLE_RULES,
     DEFAULT_ENABLE_SIGNALS,
     DEFAULT_RULES_INTERVAL,
     DEFAULT_SIGNALS_INTERVAL,
@@ -40,7 +38,6 @@ from .const import (
 from .coordinator import (
     MimosaFirewallRulesCoordinator,
     MimosaHeatmapCoordinator,
-    MimosaRulesCoordinator,
     MimosaSignalsCoordinator,
     MimosaStatsCoordinator,
 )
@@ -54,7 +51,6 @@ class MimosaRuntime:
     stats_coordinator: MimosaStatsCoordinator
     signals_coordinator: Optional[MimosaSignalsCoordinator]
     heatmap_coordinator: Optional[MimosaHeatmapCoordinator]
-    rules_coordinator: Optional[MimosaRulesCoordinator]
     firewall_rules_coordinator: Optional[MimosaFirewallRulesCoordinator]
 
 
@@ -74,7 +70,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     enable_signals = options.get(CONF_ENABLE_SIGNALS, DEFAULT_ENABLE_SIGNALS)
     enable_heatmap = options.get(CONF_ENABLE_HEATMAP, DEFAULT_ENABLE_HEATMAP)
-    enable_rules = options.get(CONF_ENABLE_RULES, DEFAULT_ENABLE_RULES)
     enable_firewall_rules = options.get(
         CONF_ENABLE_FIREWALL_RULES, DEFAULT_ENABLE_FIREWALL_RULES
     )
@@ -102,11 +97,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         await heatmap_coordinator.async_config_entry_first_refresh()
 
-    rules_coordinator = None
-    if enable_rules:
-        rules_coordinator = MimosaRulesCoordinator(hass, api, rules_interval)
-        await rules_coordinator.async_config_entry_first_refresh()
-
     firewall_rules_coordinator = None
     if enable_firewall_rules:
         firewall_rules_coordinator = MimosaFirewallRulesCoordinator(
@@ -120,7 +110,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         stats_coordinator=stats_coordinator,
         signals_coordinator=signals_coordinator,
         heatmap_coordinator=heatmap_coordinator,
-        rules_coordinator=rules_coordinator,
         firewall_rules_coordinator=firewall_rules_coordinator,
     )
 
